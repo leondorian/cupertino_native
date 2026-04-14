@@ -21,6 +21,7 @@ class CNPopupMenuItem extends CNPopupMenuEntry {
     this.icon,
     this.enabled = true,
     this.checked = false,
+    this.isDestructive = false,
   });
 
   /// Display label for the item.
@@ -34,6 +35,9 @@ class CNPopupMenuItem extends CNPopupMenuEntry {
 
   /// Whether the item should display a check mark.
   final bool checked;
+
+  /// Whether this item represents a destructive action (rendered in red).
+  final bool isDestructive;
 }
 
 /// A visual divider between popup menu items.
@@ -191,6 +195,7 @@ class _CNPopupMenuButtonState extends State<CNPopupMenuButton> {
                       if (widget.items[i] is CNPopupMenuItem)
                         CupertinoActionSheetAction(
                           onPressed: () => Navigator.of(ctx).pop(i),
+                          isDestructiveAction: (widget.items[i] as CNPopupMenuItem).isDestructive,
                           child: Text(
                             (widget.items[i] as CNPopupMenuItem).label,
                           ),
@@ -233,6 +238,7 @@ class _CNPopupMenuButtonState extends State<CNPopupMenuButton> {
                       if (widget.items[i] is CNPopupMenuItem)
                         CupertinoActionSheetAction(
                           onPressed: () => Navigator.of(ctx).pop(i),
+                          isDestructiveAction: (widget.items[i] as CNPopupMenuItem).isDestructive,
                           child: Text(
                             (widget.items[i] as CNPopupMenuItem).label,
                           ),
@@ -265,6 +271,7 @@ class _CNPopupMenuButtonState extends State<CNPopupMenuButton> {
     final isDivider = <bool>[];
     final enabled = <bool>[];
     final checked = <bool>[];
+    final isDestructiveList = <bool>[];
     final sizes = <double?>[];
     final colors = <int?>[];
     final modes = <String?>[];
@@ -277,6 +284,7 @@ class _CNPopupMenuButtonState extends State<CNPopupMenuButton> {
         isDivider.add(true);
         enabled.add(false);
         checked.add(false);
+        isDestructiveList.add(false);
         sizes.add(null);
         colors.add(null);
         modes.add(null);
@@ -288,6 +296,7 @@ class _CNPopupMenuButtonState extends State<CNPopupMenuButton> {
         isDivider.add(false);
         enabled.add(e.enabled);
         checked.add(e.checked);
+        isDestructiveList.add(e.isDestructive);
         sizes.add(e.icon?.size);
         colors.add(resolveColorToArgb(e.icon?.color, context));
         modes.add(e.icon?.mode?.name);
@@ -318,6 +327,7 @@ class _CNPopupMenuButtonState extends State<CNPopupMenuButton> {
       'isDivider': isDivider,
       'enabled': enabled,
       'checked': checked,
+      'isDestructive': isDestructiveList,
       'sfSymbolSizes': sizes,
       'sfSymbolColors': colors,
       'sfSymbolRenderingModes': modes,
@@ -480,6 +490,7 @@ class _CNPopupMenuButtonState extends State<CNPopupMenuButton> {
     final updIsDivider = <bool>[];
     final updEnabled = <bool>[];
     final updChecked = <bool>[];
+    final updIsDestructive = <bool>[];
     final updSizes = <double?>[];
     final updColors = <int?>[];
     final updModes = <String?>[];
@@ -492,6 +503,7 @@ class _CNPopupMenuButtonState extends State<CNPopupMenuButton> {
         updIsDivider.add(true);
         updEnabled.add(false);
         updChecked.add(false);
+        updIsDestructive.add(false);
         updSizes.add(null);
         updColors.add(null);
         updModes.add(null);
@@ -503,6 +515,7 @@ class _CNPopupMenuButtonState extends State<CNPopupMenuButton> {
         updIsDivider.add(false);
         updEnabled.add(e.enabled);
         updChecked.add(e.checked);
+        updIsDestructive.add(e.isDestructive);
         updSizes.add(e.icon?.size);
         updColors.add(resolveColorToArgb(e.icon?.color, context));
         updModes.add(e.icon?.mode?.name);
@@ -576,6 +589,7 @@ class _CNPopupMenuButtonState extends State<CNPopupMenuButton> {
       'isDivider': updIsDivider,
       'enabled': updEnabled,
       'checked': updChecked,
+      'isDestructive': updIsDestructive,
       'sfSymbolSizes': updSizes,
       'sfSymbolColors': updColors,
       'sfSymbolRenderingModes': updModes,

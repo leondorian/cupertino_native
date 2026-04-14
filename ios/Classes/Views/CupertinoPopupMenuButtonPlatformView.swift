@@ -12,6 +12,7 @@ class CupertinoPopupMenuButtonPlatformView: NSObject, FlutterPlatformView {
   private var dividers: [Bool] = []
   private var enabled: [Bool] = []
   private var checked: [Bool] = []
+  private var isDestructive: [Bool] = []
   private var itemSizes: [NSNumber] = []
   private var itemColors: [NSNumber] = []
   private var itemModes: [String?] = []
@@ -43,6 +44,7 @@ class CupertinoPopupMenuButtonPlatformView: NSObject, FlutterPlatformView {
     var dividers: [NSNumber] = []
     var enabled: [NSNumber] = []
     var checkedNums: [NSNumber] = []
+    var isDestructive: [NSNumber] = []
     var sizes: [NSNumber] = []
     var colors: [NSNumber] = []
     var buttonIconMode: String? = nil
@@ -64,6 +66,7 @@ class CupertinoPopupMenuButtonPlatformView: NSObject, FlutterPlatformView {
       dividers = (dict["isDivider"] as? [NSNumber]) ?? []
       enabled = (dict["enabled"] as? [NSNumber]) ?? []
       checkedNums = (dict["checked"] as? [NSNumber]) ?? []
+      isDestructive = (dict["isDestructive"] as? [NSNumber]) ?? []
       sizes = (dict["sfSymbolSizes"] as? [NSNumber]) ?? []
       colors = (dict["sfSymbolColors"] as? [NSNumber]) ?? []
       if let modes = dict["sfSymbolRenderingModes"] as? [String?] { self.itemModes = modes }
@@ -113,6 +116,7 @@ class CupertinoPopupMenuButtonPlatformView: NSObject, FlutterPlatformView {
     self.dividers = dividers.map { $0.boolValue }
     self.enabled = enabled.map { $0.boolValue }
     self.checked = checkedNums.map { $0.boolValue }
+    self.isDestructive = isDestructive.map { $0.boolValue }
 
     self.isRoundButton = makeRound
     applyButtonStyle(buttonStyle: buttonStyle, round: makeRound)
@@ -175,6 +179,7 @@ class CupertinoPopupMenuButtonPlatformView: NSObject, FlutterPlatformView {
           self.dividers = ((args["isDivider"] as? [NSNumber]) ?? []).map { $0.boolValue }
           self.enabled = ((args["enabled"] as? [NSNumber]) ?? []).map { $0.boolValue }
           self.checked = ((args["checked"] as? [NSNumber]) ?? []).map { $0.boolValue }
+          self.isDestructive = ((args["isDestructive"] as? [NSNumber]) ?? []).map { $0.boolValue }
           let sizes = (args["sfSymbolSizes"] as? [NSNumber]) ?? []
           let colors = (args["sfSymbolColors"] as? [NSNumber]) ?? []
           self.itemSizes = sizes
@@ -317,6 +322,7 @@ class CupertinoPopupMenuButtonPlatformView: NSObject, FlutterPlatformView {
         let action = UIAction(title: title, image: image, attributes: attributes, state: state) { [weak self] _ in
           self?.channel.invokeMethod("itemSelected", arguments: ["index": i])
         }
+        if i < isDestructive.count, isDestructive[i] { action.attributes.insert(.destructive) }
         current.append(action)
       }
       flushGroup()
@@ -340,7 +346,9 @@ class CupertinoPopupMenuButtonPlatformView: NSObject, FlutterPlatformView {
         continue
       }
       let title = i < labels.count ? labels[i] : ""
-      let action = UIAlertAction(title: title, style: .default) { [weak self] _ in
+      let isDestructiveItem = i < isDestructive.count ? isDestructive[i] : false
+      let style: UIAlertAction.Style = isDestructiveItem ? .destructive : .default
+      let action = UIAlertAction(title: title, style: style) { [weak self] _ in
         self?.channel.invokeMethod("itemSelected", arguments: ["index": i])
       }
       if i < enabled.count { action.isEnabled = enabled[i] }

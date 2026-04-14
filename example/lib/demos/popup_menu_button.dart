@@ -29,6 +29,7 @@ class _PopupMenuButtonDemoPageState extends State<PopupMenuButtonDemoPage> {
         label: 'Delete',
         icon: const CNSymbol('trash', size: 18),
         enabled: false,
+        isDestructive: true,
       ),
     ];
 

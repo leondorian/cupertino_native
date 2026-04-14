@@ -10,6 +10,7 @@ class CupertinoPopupMenuButtonNSView: NSView {
   private var dividers: [Bool] = []
   private var enabled: [Bool] = []
   private var checked: [Bool] = []
+  private var isDestructive: [Bool] = []
   private var defaultSizes: [NSNumber] = []
   private var defaultColors: [NSNumber] = []
   private var defaultModes: [String?] = []
@@ -35,6 +36,7 @@ class CupertinoPopupMenuButtonNSView: NSView {
     var dividers: [NSNumber] = []
     var enabled: [NSNumber] = []
     var checkedNums: [NSNumber] = []
+    var isDestructiveNums: [NSNumber] = []
     var sizes: [NSNumber] = []
     var colors: [NSNumber] = []
     var buttonIconMode: String? = nil
@@ -56,6 +58,7 @@ class CupertinoPopupMenuButtonNSView: NSView {
       dividers = (dict["isDivider"] as? [NSNumber]) ?? []
       enabled = (dict["enabled"] as? [NSNumber]) ?? []
       checkedNums = (dict["checked"] as? [NSNumber]) ?? []
+      isDestructiveNums = (dict["isDestructive"] as? [NSNumber]) ?? []
       if let modes = dict["sfSymbolRenderingModes"] as? [String?] { self.defaultModes = modes }
       if let palettes = dict["sfSymbolPaletteColors"] as? [[NSNumber]] { self.defaultPalettes = palettes }
       if let gradients = dict["sfSymbolGradientEnabled"] as? [NSNumber?] { self.defaultGradients = gradients }
@@ -152,6 +155,7 @@ class CupertinoPopupMenuButtonNSView: NSView {
     self.dividers = dividers.map { $0.boolValue }
     self.enabled = enabled.map { $0.boolValue }
     self.checked = checkedNums.map { $0.boolValue }
+    self.isDestructive = isDestructiveNums.map { $0.boolValue }
     self.defaultSizes = sizes
     self.defaultColors = colors
     rebuildMenu(defaultSizes: sizes, defaultColors: colors)
@@ -172,6 +176,7 @@ class CupertinoPopupMenuButtonNSView: NSView {
           self.dividers = ((args["isDivider"] as? [NSNumber]) ?? []).map { $0.boolValue }
           self.enabled = ((args["enabled"] as? [NSNumber]) ?? []).map { $0.boolValue }
           self.checked = ((args["checked"] as? [NSNumber]) ?? []).map { $0.boolValue }
+          self.isDestructive = ((args["isDestructive"] as? [NSNumber]) ?? []).map { $0.boolValue }
           self.defaultSizes = (args["sfSymbolSizes"] as? [NSNumber]) ?? []
           self.defaultColors = (args["sfSymbolColors"] as? [NSNumber]) ?? []
           self.defaultModes = (args["sfSymbolRenderingModes"] as? [String?]) ?? []
@@ -331,6 +336,14 @@ class CupertinoPopupMenuButtonNSView: NSView {
           }
           mi.image = img
         }
+      }
+      // Apply destructive styling if needed
+      if i < isDestructive.count, isDestructive[i] {
+        let attributedTitle = NSAttributedString(
+          string: mi.title,
+          attributes: [.foregroundColor: NSColor.systemRed]
+        )
+        mi.attributedTitle = attributedTitle
       }
       popupMenu.addItem(mi)
     }
